@@ -4,7 +4,7 @@ An auto-updater mod focused on being as reliable and user friendly as possible
 ## Installation
 1. Download and install [MultiMC](https://multimc.org/#Download) if you haven't already.
 1. If you haven't already, press "create instance", and press "import from zip", and paste the following URL into the text field: https://cdn.discordapp.com/attachments/666758878813487136/699323306637262928/fabric-alpha.zip
-1. Download $mod_name from the [releases page](https://github.com/TheMythMC/Barium/releases).
+1. Download Barium from the [releases page](https://github.com/TheMythMC/Barium/releases).
 1. Click on your new MultiMC instance and click "edit instance" on the right. Click "loader mods" then "add", and navigate to the mod you just downloaded, and press OK.
 
 ## Contributing
