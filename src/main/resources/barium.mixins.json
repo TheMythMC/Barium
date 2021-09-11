@@ -1,3 +1,4 @@
 {
-  "target": "JAVA_16"
+  "target": "JAVA_16",
+  "package": "dev.themyth.barium.mixins"
 }

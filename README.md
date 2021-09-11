@@ -1,3 +1,5 @@
+# NOTE: BARIUM IS NOT READY, IT WILL NOT COMPILE
+
 # Barium
 An auto-updater mod focused on being as reliable and user friendly as possible
 
