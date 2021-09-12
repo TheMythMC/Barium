@@ -1,4 +1,4 @@
-# NOTE: BARIUM IS NOT READY, IT WILL NOT COMPILE
+# NOTE: BARIUM IS NOT READY, THE API ENDPOINT IS NOT IN PROD YET
 
 # Barium
 An auto-updater mod focused on being as reliable and user friendly as possible
@@ -30,6 +30,8 @@ An auto-updater mod focused on being as reliable and user friendly as possible
    ```
    The mod JAR may be found in the `build/libs` directory
 1. [Create a pull request](https://help.github.com/en/articles/creating-a-pull-request)
-   so that your changes can be integrated into $mod_name
+   so that your changes can be integrated into Barium
     - Note: for large contributions, create an issue before doing all that
       work, to ask whether your pull request is likely to be accepted
+## Why is this mod full of spaghetti code
+I do this in my free time, deal with it (or open a PR)

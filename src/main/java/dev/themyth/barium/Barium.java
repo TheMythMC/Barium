@@ -17,14 +17,14 @@ public class Barium implements ModInitializer {
      * DON'T USE THIS
      */
     public static Barium INSTANCE = new Barium();
-    private static final FabricLoader fabricInstance = FabricLoader.getInstance();
+    public static final FabricLoader fabricInstance = FabricLoader.getInstance();
     public static List<ModContainer> mods = new LinkedList<>();
     // mods we will not update
     public final Map<String, File> ignoredMods = new HashMap<>();
     private JsonObject bariumProperties;
     //  private final String[] gameVersions = {"1.14", "1.15", "1.16", "1.17"};
     // mods we can update
-    private static final Map<String, File> modMap = new HashMap<>();
+    public static final Map<String, File> modMap = new HashMap<>();
     public boolean shouldInstall = false;
 
     @Override
@@ -79,7 +79,7 @@ public class Barium implements ModInitializer {
 
                 try {
                     ZipFile zipFile = new ZipFile(file);
-                    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                    final Enumeration<? extends ZipEntry> entries = zipFile.entries();
                     while(entries.hasMoreElements()) {
                         ZipEntry entry = entries.nextElement();
                         if (!entry.getName().equals("fabric.mod.json")) continue;
@@ -94,7 +94,7 @@ public class Barium implements ModInitializer {
                             getInstance().ignoredMods.put(id, file);
                             // stop it from adding the mod to modMap
                             return;
-                        };
+                        }
                         // if not ignored, add the mod to the modMap
                         modMap.put(id, file);
                     }
