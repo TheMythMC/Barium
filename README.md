@@ -1,4 +1,4 @@
-# NOTE: BARIUM IS NOT READY, THE API ENDPOINT IS NOT IN PROD YET
+# NOTE: BARIUM IS NOT READY, THE API ENDPOINT IS NOT IN PROD (or even functional) YET
 
 # Barium
 An auto-updater mod focused on being as reliable and user friendly as possible
