@@ -7,3 +7,4 @@ Same thing but for Modrinth too.
 - /download and /update commands
 ## Features that might not be added
 - Automatic Update (When game close after a certain perioud of time (eg. 7 days))
+- Automatic dependency download (just adds another layer of things to parse, so could make the API slower)
