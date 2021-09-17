@@ -1,7 +1,7 @@
 # NOTE: BARIUM IS NOT READY, THE API ENDPOINT IS NOT IN PROD YET
 
 # Barium
-An auto-updater mod focused on being as reliable and user friendly as possible
+An auto-updater mod focused on being as reliable and user-friendly as possible
 
 ## Installation
 1. Download and install [MultiMC](https://multimc.org/#Download) if you haven't already.
@@ -12,7 +12,7 @@ An auto-updater mod focused on being as reliable and user friendly as possible
 ## Contributing
 1. Clone the repository
    ```
-   git clone https://github.com/TheMythMC/barium.git
+   git clone https://github.com/TheMythMC/Barium.git
    cd barium
    ```
 1. Generate the Minecraft source code
@@ -38,4 +38,5 @@ I do this in my free time, deal with it (or open a PR)
 
 ### Credits
 EarthComputer: This README template\
+HughBone: For finding out how hashes can be used to find out the mod provider\
 JustSnoopy30: For UniverseInstaller as a template for what I need to do

@@ -1,71 +1,60 @@
 package dev.themyth.barium;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import dev.themyth.barium.utils.Downloader;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import com.google.gson.JsonArray;
+import dev.themyth.barium.config.BariumConfig;
+import dev.themyth.barium.mod_platform.ModFile;
+import dev.themyth.barium.mod_platform.ModToDownload;
+import dev.themyth.barium.util.Downloader;
+import dev.themyth.barium.util.Hash;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.player.PlayerEntity;
+import org.jetbrains.annotations.Nullable;
+import oshi.util.tuples.Pair;
+import oshi.util.tuples.Triplet;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.net.URL;
+import java.util.*;
 
 public class Updater {
-    public static Updater INSTANCE = new Updater();
-    public boolean didDownload = false;
+    static boolean fetchRunning = false;
 
-    public void update() {
-        // Called on actual update
-
-        // String is URL to download
-        List<String> modsToDownload = getModsToDownload();
-        downloadList(modsToDownload);
-    }
-    public List<String> getModsToDownload() {
-        List<String> temp = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("https://themyth.dev/api/barium/mods-list");
-        List<NameValuePair> params = new ArrayList<>();
-        Barium.modMap.forEach( (k, v) -> params.add(new BasicNameValuePair(k, "get")));
-        try {
-            HttpResponse response = httpClient.execute(httpPost);
-            HttpEntity entity = response.getEntity();
-            if (entity == null) throw new IOException();
-            InputStream in = entity.getContent();
-            new Gson().fromJson(readAll(in), JsonObject.class).getAsJsonObject().entrySet().forEach((entry) -> temp.add(entry.getValue().getAsString()));
-            return temp;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String readAll(InputStream reader) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        int codePoint;
-        while ((codePoint = reader.read()) != -1) {
-            stringBuilder.append((char) codePoint);
-        }
-        return stringBuilder.toString();
-    }
-
-    public void downloadList(List<String> strings) {
-        if (strings == null) {
-            didDownload = false;
-            return;
-        }
-        strings.forEach(string -> {
-            Downloader.downloadFile(string, Paths.get(string.split("/")[string.split("/").length - 1]));
+    public static List<Triplet<String, URL, File>> fetchAllMods(@Nullable PlayerEntity player) {
+        if (fetchRunning) return null;
+        List<Triplet<String, URL, File>> temp = new ArrayList<>();
+        Arrays.stream(Objects.requireNonNull(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles())).forEach(file -> {
+            if(BariumConfig.ignoredMods.contains(file.getName())) return;
+            Barium.sendMessage("Checking " + file.getName() + "..", player);
+            temp.add(checkUpdates(file));
         });
-        didDownload = true;
+        return temp;
     }
+    public static Triplet<String, URL, File> checkUpdates(File modFile) {
+        if (modFile.getName().endsWith(".jar")) {
+            ModFile newestFile = null;
+            try {
+                String sha1 = Hash.getSHA1(modFile);
+                ModToDownload modToDownload = new ModToDownload(sha1, "modrinth");
+                if (modToDownload.name != null) {
+                    JsonArray jsonArray = Downloader.getJsonArray("https://api.modrinth.com/api/v1/mod/" + modToDownload.id + "/version");
+                    newestFile = Downloader.getNewUpdate(jsonArray, modToDownload, "modrinth");
+                    return new Triplet<>(newestFile.fileName, new URL(newestFile.downloadUrl), modFile);
+                } else {
+                    String murmurHash = Hash.getMurmurHash(modFile);
+                    String posted = Downloader.sendPost(murmurHash);
 
+                    if (posted != null) {
+                        modToDownload = new ModToDownload(posted, "curseforge");
+                        if (modToDownload.name != null) {
+                            JsonArray array = Downloader.getJsonArray("https://addons-ecs.forgesvc.net/api/v2/addon/" + modToDownload.id + "/files");
+                            newestFile = Downloader.getNewUpdate(array, modToDownload, "curseforge");
+                            return new Triplet<>(newestFile.fileName, new URL(newestFile.downloadUrl), modFile);
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return null;
+    }
 }
