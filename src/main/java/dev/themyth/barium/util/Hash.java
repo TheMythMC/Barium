@@ -9,7 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 // huge thanks to fabrilous-updater
-// https://hughbone/fabrilous-updater
+// https://github.com/hughbone/fabrilous-updater
 public class Hash {
     public static String getMurmurHash(File file) throws IOException {
         final int m = 0x5bd1e995;

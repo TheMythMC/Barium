@@ -44,7 +44,7 @@ public class Barium implements ModInitializer {
 
             } else {
                 Logger LOGGER = LoggerFactory.getLogger(Barium.class);
-                LOGGER.info(message);
+                LOGGER.info("[Barium] " + message);
             }
         }
     }

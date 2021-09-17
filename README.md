@@ -1,5 +1,3 @@
-# NOTE: BARIUM IS NOT READY, THE API ENDPOINT IS NOT IN PROD YET
-
 # Barium
 An auto-updater mod focused on being as reliable and user-friendly as possible
 
@@ -8,6 +6,10 @@ An auto-updater mod focused on being as reliable and user-friendly as possible
 1. If you haven't already, press "create instance", and press "import from zip", and paste the following URL into the text field: https://cdn.discordapp.com/attachments/666758878813487136/699323306637262928/fabric-alpha.zip
 1. Download Barium from the [releases page](https://github.com/TheMythMC/Barium/releases).
 1. Click on your new MultiMC instance and click "edit instance" on the right. Click "loader mods" then "add", and navigate to the mod you just downloaded, and press OK.
+
+## Using
+- If you are on a server use the /update command
+- If you are on a client, install [ModMenu](https://github.com/TerraformersMC/ModMenu/releases) and access the mod GUI
 
 ## Contributing
 1. Clone the repository
