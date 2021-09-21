@@ -39,7 +39,7 @@ An auto-updater mod focused on being as reliable and user-friendly as possible
 ## Why is this mod full of spaghetti code
 I do this in my free time, deal with it (or open a PR)
 
-### Credits
+## Credits
 EarthComputer: This README template\
 HughBone: For finding out how hashes can be used to find out the mod provider\
 JustSnoopy30: For UniverseInstaller as a template for what I need to do
