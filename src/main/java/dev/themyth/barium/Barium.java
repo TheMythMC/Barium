@@ -14,36 +14,54 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.ZonedDateTime;
+import java.util.Objects;
 
 // basically a utility class
+// needs refactor, see ⬇
+// TODO: REFACTOR
 public class Barium implements ModInitializer {
     public static BariumConfig config;
+    public static Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onInitialize() {
+        try {
+            this.registerHooks();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.registerCommands();
     }
 
     private void registerCommands() {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || FabricLoader.getInstance().isModLoaded("modmenu"))
-            CommandRegistrationCallback.EVENT.register(((dispatcher, dedicated) -> new UpdateCommand().register(dispatcher)));
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || !FabricLoader.getInstance().isModLoaded("modmenu")) {}
+            CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> new UpdateCommand().register(dispatcher));
     }
     // Initializer so I don't have to call new Barium() in onInitialize
     static {
-        config = new BariumConfig();
+        try {
+            config = new BariumConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void sendMessage(String message, PlayerEntity player) {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && MinecraftClient.getInstance().currentScreen != null) {
+        if ((FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && MinecraftClient.getInstance().currentScreen != null)|| MinecraftClient.getInstance().player != null) {
             InfoUtils.showGuiAndInGameMessage(Message.MessageType.INFO, message);
         } else {
             if (player != null) {
                 player.sendMessage(new LiteralText(message), false);
-
             } else {
-                Logger LOGGER = LoggerFactory.getLogger(Barium.class);
                 LOGGER.info("[Barium] " + message);
             }
         }
@@ -61,4 +79,21 @@ public class Barium implements ModInitializer {
         return verStr;
     }
 
+    public void registerHooks() throws IOException {
+        if (Barium.config.msBetweenUpdates == -1 ) {
+            LOGGER.log(Level.WARN, "No AutoUpdate time set, not updating.");
+            return;
+        } else
+            if (FabricLoader.getInstance().getConfigDir().resolve("barium").resolve("barium.json").toFile().exists()) {
+                LOGGER.log(Level.ERROR, "Already updating, request ignored. Please tell me how you encountered this message");
+                return;
+            }
+        if((ZonedDateTime.now().toInstant().toEpochMilli() - Files.readAttributes(FabricLoader.getInstance().getConfigDir().resolve("barium").resolve("run_file"),
+                BasicFileAttributes.class).creationTime().toMillis()) > Barium.config.msBetweenUpdates) {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                LOGGER.info("Updating... this could take a while!");
+
+            }));
+        }
+    }
 }

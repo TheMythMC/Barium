@@ -2,6 +2,8 @@ plugins {
     id 'fabric-loom' version '0.9-SNAPSHOT'
     id 'maven-publish'
     id "com.modrinth.minotaur" version "1.2.1"
+    id 'java'
+    id 'java-library'
 }
 
 repositories {
@@ -9,6 +11,11 @@ repositories {
     maven { url "https://maven.terraformersmc.com/releases/" }
     // Because im too lazy to write my own rendering code, deal with it :)
     maven { url "https://masa.dy.fi/maven"}
+}
+
+configurations {
+    shadow
+    implementation.extendsFrom shadow
 }
 
 import com.modrinth.minotaur.TaskModrinthUpload
@@ -30,13 +37,17 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+   modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+   modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+   include "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
 
-    include "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+   implementation 'com.electronwill.night-config:json:3.6.4'
+   include 'com.electronwill.night-config:json:3.6.4'
 
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modApi ("com.terraformersmc:modmenu:${project.modmenu_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 }
 
 processResources {

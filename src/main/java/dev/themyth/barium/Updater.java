@@ -1,7 +1,6 @@
 package dev.themyth.barium;
 
 import com.google.gson.JsonArray;
-import dev.themyth.barium.config.BariumConfig;
 import dev.themyth.barium.mod_platform.ModFile;
 import dev.themyth.barium.mod_platform.ModToDownload;
 import dev.themyth.barium.util.Downloader;
@@ -9,7 +8,6 @@ import dev.themyth.barium.util.Hash;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
 import oshi.util.tuples.Triplet;
 
 import java.io.File;
@@ -19,17 +17,23 @@ import java.util.*;
 public class Updater {
     static boolean fetchRunning = false;
 
+    // depending on what we run, we will implement the install method
     public static List<Triplet<String, URL, File>> fetchAllMods(@Nullable PlayerEntity player) {
         if (fetchRunning) return null;
+        fetchRunning = true;
         List<Triplet<String, URL, File>> temp = new ArrayList<>();
         Arrays.stream(Objects.requireNonNull(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles())).forEach(file -> {
-            if(BariumConfig.ignoredMods.contains(file.getName())) return;
-            Barium.sendMessage("Checking " + file.getName() + "..", player);
-            temp.add(checkUpdates(file));
+            if(Barium.config.ignoredMods.contains(file.getName())) return;
+            Barium.sendMessage("Checking " + file.getName().replace(".jar", "") + "..", player);
+            Triplet<String, URL, File> updated = checkForUpdate(file);
+            // check if its null, we dont want an array with nulls
+            // nullpointer exceptions are annoying
+            if (updated != null) temp.add(updated);
         });
+        fetchRunning = false;
         return temp;
     }
-    public static Triplet<String, URL, File> checkUpdates(File modFile) {
+    public static @Nullable Triplet<String, URL, File> checkForUpdate(File modFile) {
         if (modFile.getName().endsWith(".jar")) {
             ModFile newestFile = null;
             try {
