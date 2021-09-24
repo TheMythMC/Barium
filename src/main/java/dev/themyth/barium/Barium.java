@@ -59,7 +59,7 @@ public class Barium implements ModInitializer {
             if (player != null) {
                 player.sendMessage(new LiteralText(message), false);
             } else {
-                LOGGER.info("[Barium] " + message);
+                LOGGER.info(message);
             }
         }
     }
@@ -71,7 +71,7 @@ public class Barium implements ModInitializer {
         String[] verSplit = verStr.split("\\.");
         try {
             verSplit = ArrayUtils.remove(verSplit, 2);
-        } catch (Exception e) {}
+        } catch (Exception ignored) {}
         verStr = verSplit[0] + verSplit[1];
         return verStr;
     }

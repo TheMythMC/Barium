@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.themyth.barium.util.Downloader;
-import net.fabricmc.loom.configuration.providers.minecraft.MinecraftVersionMeta;
 
 import java.util.Objects;
 

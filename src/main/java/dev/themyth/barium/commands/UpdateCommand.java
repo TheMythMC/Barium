@@ -4,17 +4,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import dev.themyth.barium.Barium;
 import dev.themyth.barium.Updater;
 import dev.themyth.barium.util.Downloader;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import oshi.util.tuples.Triplet;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.literal;
 

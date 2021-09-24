@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "barium",
   "version": "0.1.0",
-
   "name": "Barium",
   "description": "An Auto-Updater with ModMenu Support",
   "authors": [
@@ -26,7 +25,6 @@
   "mixins": [
     "barium.mixins.json"
   ],
-
   "depends": {
     "minecraft": "1.17.x",
     "fabricloader": ">=0.11.6"
