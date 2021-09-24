@@ -67,12 +67,19 @@ public class Downloader {
         }
     }
 
-    public static void downloadFile(URL url, String filename) throws IOException {
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-        FileOutputStream fos = new FileOutputStream(filename);
-        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-        fos.close();
-        rbc.close();
+    public static void downloadFile(URL url, String filename) {
+        // so game dont freze
+        new Thread( () -> {
+            try {
+                ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+                FileOutputStream fos = new FileOutputStream(FabricLoader.getInstance().getGameDir().resolve("mods").resolve(filename).toString());
+                fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                fos.close();
+                rbc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public static ModFile getNewUpdate(JsonArray array, ModToDownload modToDownload, String provider) {

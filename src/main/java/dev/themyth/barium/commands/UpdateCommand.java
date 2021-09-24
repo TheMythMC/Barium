@@ -8,8 +8,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
+import oshi.util.tuples.Triplet;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 import static net.minecraft.server.command.CommandManager.literal;
@@ -26,14 +30,12 @@ public class UpdateCommand {
     }
     public void update(PlayerEntity player) {
         Barium.sendMessage("Fetching mods...", player);
-        Objects.requireNonNull(Updater.fetchAllMods(player)).forEach((triplet) -> {
-            Barium.sendMessage("Updating " + triplet.getA().replace(".jar", "") + "...", player);
-            triplet.getC().delete();
-            try {
-                Downloader.downloadFile(triplet.getB(), FabricLoader.getInstance().getGameDir().resolve("mods").resolve(triplet.getA()).toString());
-            } catch (IOException e) {
-                Barium.sendMessage("Unable to update mod: " + triplet.getA().replace(".jar", ""), player);
-            }
-        });
+        List<Triplet<String, URL, File>> allMods = Updater.fetchAllMods(player);
+        if(allMods != null)
+            allMods.forEach(triplet -> {
+                if(Barium.config.ignoredMods.contains(triplet.getC().getName())) return;
+                triplet.getC().delete();
+                Downloader.downloadFile(triplet.getB(), triplet.getA());
+            });
     }
 }

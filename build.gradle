@@ -11,6 +11,8 @@ repositories {
     maven { url "https://maven.terraformersmc.com/releases/" }
     // Because im too lazy to write my own rendering code, deal with it :)
     maven { url "https://masa.dy.fi/maven"}
+    // config code
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 configurations {
@@ -39,15 +41,25 @@ dependencies {
     // You may need to force-disable transitiveness on them.
    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-   modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+   modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}", {
+       exclude module: 'fabric-api'
+   }
    include "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
 
-   implementation 'com.electronwill.night-config:json:3.6.4'
-   include 'com.electronwill.night-config:json:3.6.4'
+
+
+    modImplementation "me.shedaniel.cloth:cloth-config-fabric:5.0.38", {
+        exclude module: 'fabric-api'
+    }
+    include "me.shedaniel.cloth:cloth-config-fabric:5.0.38"
 
     modApi ("com.terraformersmc:modmenu:${project.modmenu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    shadow "com.electronwill.night-config:json:3.6.3"
+    include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version)))
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 }
 
 processResources {

@@ -19,11 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.ZonedDateTime;
-import java.util.Objects;
 
 // basically a utility class
 // needs refactor, see ⬇
@@ -49,8 +44,10 @@ public class Barium implements ModInitializer {
     // Initializer so I don't have to call new Barium() in onInitialize
     static {
         try {
+            LOGGER.info("Loading config...");
             config = new BariumConfig();
         } catch (IOException e) {
+            LOGGER.error("HWTA");
             e.printStackTrace();
         }
     }
@@ -84,16 +81,11 @@ public class Barium implements ModInitializer {
             LOGGER.log(Level.WARN, "No AutoUpdate time set, not updating.");
             return;
         } else
-            if (FabricLoader.getInstance().getConfigDir().resolve("barium").resolve("barium.json").toFile().exists()) {
+            if (FabricLoader.getInstance().getConfigDir().resolve("barium").resolve("run_file").toFile().exists()) {
                 LOGGER.log(Level.ERROR, "Already updating, request ignored. Please tell me how you encountered this message");
                 return;
             }
-        if((ZonedDateTime.now().toInstant().toEpochMilli() - Files.readAttributes(FabricLoader.getInstance().getConfigDir().resolve("barium").resolve("run_file"),
-                BasicFileAttributes.class).creationTime().toMillis()) > Barium.config.msBetweenUpdates) {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                LOGGER.info("Updating... this could take a while!");
-
-            }));
-        }
+        // save the config on close anyway
+        Runtime.getRuntime().addShutdownHook(new Thread(BariumConfig::save));
     }
 }

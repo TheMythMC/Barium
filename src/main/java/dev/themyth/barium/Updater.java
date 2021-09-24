@@ -7,7 +7,6 @@ import dev.themyth.barium.util.Downloader;
 import dev.themyth.barium.util.Hash;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
-import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Triplet;
 
 import java.io.File;
@@ -18,7 +17,7 @@ public class Updater {
     static boolean fetchRunning = false;
 
     // depending on what we run, we will implement the install method
-    public static List<Triplet<String, URL, File>> fetchAllMods(@Nullable PlayerEntity player) {
+    public static List<Triplet<String, URL, File>> fetchAllMods(PlayerEntity player) {
         if (fetchRunning) return null;
         fetchRunning = true;
         List<Triplet<String, URL, File>> temp = new ArrayList<>();
@@ -33,7 +32,7 @@ public class Updater {
         fetchRunning = false;
         return temp;
     }
-    public static @Nullable Triplet<String, URL, File> checkForUpdate(File modFile) {
+    public static Triplet<String, URL, File> checkForUpdate(File modFile) {
         if (modFile.getName().endsWith(".jar")) {
             ModFile newestFile = null;
             try {
