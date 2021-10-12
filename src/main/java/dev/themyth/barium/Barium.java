@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.LiteralText;
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,7 +39,8 @@ public class Barium implements ModInitializer {
     }
 
     private void registerCommands() {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || !FabricLoader.getInstance().isModLoaded("modmenu")) {}
+        // GUIs are hard
+        // if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER || !FabricLoader.getInstance().isModLoaded("modmenu")) {}
             CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> new UpdateCommand().register(dispatcher));
     }
     // Initializer so I don't have to call new Barium() in onInitialize
@@ -49,18 +51,6 @@ public class Barium implements ModInitializer {
         } catch (IOException e) {
             LOGGER.error("HWTA");
             e.printStackTrace();
-        }
-    }
-
-    public static void sendMessage(String message, PlayerEntity player) {
-        if ((FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && MinecraftClient.getInstance().currentScreen != null)|| MinecraftClient.getInstance().player != null) {
-            InfoUtils.showGuiAndInGameMessage(Message.MessageType.INFO, message);
-        } else {
-            if (player != null) {
-                player.sendMessage(new LiteralText(message), false);
-            } else {
-                LOGGER.info(message);
-            }
         }
     }
 

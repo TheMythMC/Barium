@@ -7,6 +7,8 @@ import dev.themyth.barium.util.Downloader;
 import dev.themyth.barium.util.Hash;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import oshi.util.tuples.Triplet;
 
 import java.io.File;
@@ -23,7 +25,9 @@ public class Updater {
         List<Triplet<String, URL, File>> temp = new ArrayList<>();
         Arrays.stream(Objects.requireNonNull(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles())).forEach(file -> {
             if(Barium.config.ignoredMods.contains(file.getName())) return;
-            Barium.sendMessage("Checking " + file.getName().replace(".jar", "") + "..", player);
+            // Barium.sendMessage("Checking " + file.getName().replace(".jar", "") + "..", player);
+            Logger LOGGER = LogManager.getLogger();
+            LOGGER.info("Checking " + file.getName().replace(".jar", "") + "..", player);
             Triplet<String, URL, File> updated = checkForUpdate(file);
             // check if its null, we dont want an array with nulls
             // nullpointer exceptions are annoying
