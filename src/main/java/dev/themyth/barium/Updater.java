@@ -1,6 +1,7 @@
 package dev.themyth.barium;
 
 import com.google.gson.JsonArray;
+import dev.themyth.barium.config.BariumConfig;
 import dev.themyth.barium.mod_platform.ModFile;
 import dev.themyth.barium.mod_platform.ModToDownload;
 import dev.themyth.barium.util.Downloader;
@@ -24,7 +25,7 @@ public class Updater {
         fetchRunning = true;
         List<Triplet<String, URL, File>> temp = new ArrayList<>();
         Arrays.stream(Objects.requireNonNull(FabricLoader.getInstance().getGameDir().resolve("mods").toFile().listFiles())).forEach(file -> {
-            if(Barium.config.ignoredMods.contains(file.getName())) return;
+            if(Arrays.stream(BariumConfig.ignoredMods).toList().contains(file.getName())) return;
             // Barium.sendMessage("Checking " + file.getName().replace(".jar", "") + "..", player);
             Logger LOGGER = LogManager.getLogger();
             LOGGER.info("Checking " + file.getName().replace(".jar", "") + "..", player);

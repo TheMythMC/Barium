@@ -3,17 +3,13 @@ package dev.themyth.barium;
 import com.mojang.bridge.game.GameVersion;
 import dev.themyth.barium.commands.UpdateCommand;
 import dev.themyth.barium.config.BariumConfig;
-import fi.dy.masa.malilib.gui.Message;
-import fi.dy.masa.malilib.util.InfoUtils;
-import net.fabricmc.api.EnvType;
+import dev.themyth.barium.config.BariumConfigImpl;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.LiteralText;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -45,13 +41,9 @@ public class Barium implements ModInitializer {
     }
     // Initializer so I don't have to call new Barium() in onInitialize
     static {
-        try {
-            LOGGER.info("Loading config...");
-            config = new BariumConfig();
-        } catch (IOException e) {
-            LOGGER.error("HWTA");
-            e.printStackTrace();
-        }
+        LOGGER.info("Loading config...");
+        AutoConfig.register(BariumConfig.class, JanksonConfigSerializer::new);
+        config = AutoConfig.getConfigHolder(BariumConfig.class).getConfig();
     }
 
     public static String getMinecraftVersion() {
@@ -76,6 +68,6 @@ public class Barium implements ModInitializer {
                 return;
             }
         // save the config on close anyway
-        Runtime.getRuntime().addShutdownHook(new Thread(BariumConfig::save));
+
     }
 }

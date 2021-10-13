@@ -60,8 +60,6 @@ dependencies {
     modApi ("com.terraformersmc:modmenu:${project.modmenu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-
-    shadow "com.electronwill.night-config:json:3.6.3"
     include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version)))
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 }
